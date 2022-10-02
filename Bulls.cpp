@@ -19,10 +19,10 @@ int main() {
 		}
 	}
 	vector<int> number(size);
-	number[0] = 1 + rand() % 8;
+	number[0] = 1 + rand() % (8+1);
 	for (int i = 1; i < size; i++) {
 		int pos;
-		pos = rand() % 9 + 1;
+		pos = rand() % (9 + 1);
 		number[i] = pos;
 	}
 	vector<int> number_ex(size);
@@ -33,61 +33,73 @@ int main() {
 		for (int i = 1; i < size; i++) {
 			for (int q = 0; q < size; q++) {
 				if (number[i] == number_ex[q] && i != q) {
-					number[i] = rand() % 9 + 1;
+					number[i] = rand() % (9 + 1);
 					number_ex = number;
-				}
-				else {
 					k++;
 				}
 			}
 		}
-		if (k == (size-1)*size) {
+		if (k == 0) {
 			ok = 1;
 		}
 	}
 	for (int i = 0; i < size; i++) {
 		cout << number[i];
 	}
-	cout << endl;
 	//Конец рандомного числа
 	//Ввод числа пользователем
 	int res = 0;
-	while (res==0){
+	while (res == 0) {
 		int a;
 		int stop1 = 0;
+		vector<int> input(size);
 		while (stop1 == 0) {
-			cout << "Введите число с разрядом " << size << ":"<< endl;
+			int c = 0;
+			cout << "Введите уникальное число с разрядом " << size << ":" << endl;
 			cin >> a;
-			if (a >= pow(10,size-1) && a < pow(10,size) ){
+			for (int i = (size - 1); i >= 0; i--) {
+				input[i] = a % 10;
+				a = a / 10;
+				c++;
+			}
+			if (c == size) {
 				stop1 = 1;
 			}
 		}
-		vector<int> input(size);
-		for (int i = (size-1); i >= 0; i--) {
-			input[i] = a % 10;
-			a = a / 10;
-		}
+
 		//Конец ввода
 		//Проверка и результаты
 		int bulls = 0;
 		int cows = 0;
+		int prov = 0;
+		vector<int> input_ex(size);
+		input_ex = input;
 		for (int i = 0; i < size; i++) {
 			for (int q = 0; q < size; q++) {
-				if (number[i] == input[q] && i == q) {
-					bulls++;
-				}
-				else if (number[i] == input[q] && i != q) {
-					cows++;
+				if (input[i] == input_ex[q] && i != q) {
+					prov++;
 				}
 			}
 		}
-		if (bulls == size) {
-			cout << "Вы победили!!"<<endl;
-			res = 1;
-		}
-		else {
-			cout << "Количество коров: " << cows<<endl;
-			cout << "Количество быков: " << bulls<<endl;
+		if (prov == 0) {
+			for (int i = 0; i < size; i++) {
+				for (int q = 0; q < size; q++) {
+					if (number[i] == input[q] && i == q) {
+						bulls++;
+					}
+					else if (number[i] == input[q] && i != q) {
+						cows++;
+					}
+				}
+			}
+			if (bulls == size) {
+				cout << "Вы победили!!" << endl;
+				res = 1;
+			}
+			else {
+				cout << "Количество коров: " << cows << endl;
+				cout << "Количество быков: " << bulls << endl;
+			}
 		}
 	}
 }
