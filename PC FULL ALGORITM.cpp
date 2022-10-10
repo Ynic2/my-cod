@@ -21,18 +21,20 @@ int exam(vector<int> number, size_t size) {
 	return k;
 }
 
-void num(int& a, vector<int>& number, size_t size) {
+vector<int> num(int& a) {
 	int flag = 0;
 	while (flag == 0) {
-		mas(a, number, size);
-		int k;
-		k = exam(number, size);
-		if (k != 0) {
-			cout << "Введите УНИКАЛЬНОЕ число: ";
-			cin >> a;
-			cout << endl;
+		size_t size = to_string(a).length();
+		vector<int> vec(size);
+		mas(a, vec, size);
+		if (exam(vec, size) == 0) {
+			return vec;
+			break;
 		}
-		else flag = 1;
+		else {
+			cout << "Введите УНИКАЛЬНОЕ число:";
+			cin >> a;
+		}
 	}
 }
 
@@ -47,8 +49,8 @@ void bulls_cows(int& bulls, int& cows, vector<int> number, vector<int> answer, s
 	}
 }
 
-void win(int bulls, int& stop, int play) {
-	if (bulls == 4) {
+void win(int bulls, int& stop, int play,size_t size) {
+	if (bulls == size) {
 		stop = 1;
 		cout << "Компьютер победил! Загаданное число: " << play << endl;
 	}
@@ -60,9 +62,9 @@ int main() {
 	cout << "Введите число: ";
 	cin >> a;
 	cout << endl;
-	const size_t size = to_string(a).length();
-	vector<int> number(size);
-	num(a, number, size);
+	vector<int> number(0);
+	number = num(a);
+	size_t size = number.size();
 	vector<int> answer(size);
 	int play = 0;
 	int stop = 0;
@@ -79,12 +81,10 @@ int main() {
 			int k = exam(answer, size);
 			if (k == 0) {
 				if (prov == 0) {
-					cout << "Компьютер говорит: " << play << endl;
 					bulls_cows(bulls, cows, number, answer, size);
-					cout << "Количество быков: ";
-					cin >> bulls;
-					cout << "Количество коров: ";
-					cin >> cows;
+					cout << "Компьютер говорит: " << play << endl;
+					cout << "Количество быков: "<<bulls<<endl;
+					cout << "Количество коров: "<<cows<<endl;
 					number_ex.push_back(answer);
 					lenght++;
 					vector<int> bc;
@@ -94,7 +94,6 @@ int main() {
 				}
 				else {
 					int c = 0;
-					int c1 = 0;
 					for (int i = 0; i < lenght; i++) {
 						bulls_cows(bulls_ex1, cows_ex1, number_ex[i], answer, size);
 						vector<int> bc_ex1(0);
@@ -107,11 +106,10 @@ int main() {
 						cows_ex1 = 0;
 					}
 					if (c == lenght) {
+						bulls_cows(bulls, cows, number, answer, size);
 						cout << "Копмьютер говорит: " << play << endl;	
-						cout << "Количество быков: " ;
-						cin >> bulls;
-						cout << "Количество коров: ";
-						cin >> cows;
+						cout << "Количество быков: "<<bulls<<endl ;
+						cout << "Количество коров: " << cows << endl;
 						number_ex.push_back(answer);
 						lenght++;
 						vector<int> bc;
@@ -119,7 +117,7 @@ int main() {
 						bc_ex.push_back(bc);
 					}
 				}
-				win(bulls, stop, play);
+				win(bulls, stop, play,size);
 			}
 		}
 	}
